@@ -1,0 +1,5 @@
+*.json
+venv/
+MyData/
+*.vscode
+.DS_Store
