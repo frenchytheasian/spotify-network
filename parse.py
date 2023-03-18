@@ -10,20 +10,21 @@ def parse_endsong(filename: str):
         data = json.load(f)
 
     new_data = []
-    for song in enumerate(data):
+    for song in data:
         if song["master_metadata_track_name"] == None:
             continue
 
         # Change timestamp to datetime object to make comparison easier
-        song["ts"] = datetime.datetime.strptime(song["ts"], "%Y-%m-%dT%H:%M:%SZ")
+        song["date"] = datetime.datetime.strptime(song["ts"], "%Y-%m-%dT%H:%M:%SZ")
 
         # Rename keys
         song["track"] = song.pop("master_metadata_track_name")
-        song["artist"] = song.pop("master_metadata_artist_name")
-        song["album"] = song.pop("master_metadata_album_name")
+        song["artist"] = song.pop("master_metadata_album_artist_name")
+        song["album"] = song.pop("master_metadata_album_album_name")
+        
         new_data.append(song)
 
-    return data
+    return new_data
 
 
 def parse_all_files(folder: str):
@@ -37,7 +38,7 @@ def parse_all_files(folder: str):
 
 def export(data: List):
     for song in data:
-        song["ts"] = datetime.datetime.strftime(song["ts"], "%Y-%m-%dT%H:%M:%SZ")
+        song.pop("date")
 
     with open("export.json", "w") as f:
         json.dump(data, f, indent=4)
