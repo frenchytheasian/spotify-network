@@ -6,23 +6,26 @@ from parse import parse_all_files
 from analysis import *
 
 
-def create_network():
-    folder = "MyData-min"
-
+def create_network(folder: str = "MyData"):
     path = f"{os.getcwd()}/{folder}"
     all_songs = parse_all_files(path)
-    G = nx.DiGraph()
-    for i, song in enumerate(all_songs):
+    G = nx.Graph()
+    for i, current in enumerate(all_songs):
         if i == len(all_songs) - 1:
             break
-        if G.has_edge(song["track"], all_songs[i + 1]["track"]):
-            G[song["track"]][all_songs[i + 1]["track"]]["weight"] += 1
+
+        following = all_songs[i + 1]
+
+        G.add_node(current["track"], artist=current["artist"], album=current["album"])
+        G.add_node(following["track"], artist=following["artist"], album=following["album"])
+
+        if G.has_edge(current["track"], following["track"]):
+            G[current["track"]][following["track"]]["weight"] += 1
         else:
             G.add_edge(
-                song["track"],
-                all_songs[i + 1]["track"],
+                current["track"],
+                following["track"],
                 weight=1,
-                artist=song["artist"],
             )
     return G
 
