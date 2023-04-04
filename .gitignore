@@ -4,3 +4,7 @@ MyData/
 *.vscode
 .DS_Store
 __pycache__
+
+# Network
+*.gml
+*.gexf
