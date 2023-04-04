@@ -16,12 +16,13 @@ def create_network():
         if i == len(all_songs) - 1:
             break
         if G.has_edge(song["track"], all_songs[i + 1]["track"]):
-            G[song["track"]][all_songs[i + 1]["track"]] += 1
+            G[song["track"]][all_songs[i + 1]["track"]]["weight"] += 1
         else:
             G.add_edge(
                 song["track"],
                 all_songs[i + 1]["track"],
-                attr={"weight": 1, "Artist": song["artist"]},
+                weight=1,
+                artist=song["artist"],
             )
     return G
 
@@ -37,3 +38,4 @@ def write_network(G: nx.Graph, filename: str = "spotify_network"):
 
 if __name__ == "__main__":
     G = create_network()
+    
