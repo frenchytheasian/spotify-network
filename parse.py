@@ -23,7 +23,7 @@ def parse_endsong(filename: str) -> List[dict]:
             continue
 
         # Change timestamp to datetime object to make comparison easier
-        song["date"] = datetime.datetime.strptime(song["ts"], "%Y-%m-%dT%H:%M:%SZ")
+        song["datetime"] = datetime.datetime.strptime(song["ts"], "%Y-%m-%dT%H:%M:%SZ")
 
         # Rename keys
         song["track"] = song.pop("master_metadata_track_name")

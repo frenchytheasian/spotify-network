@@ -8,7 +8,9 @@ def analyze_degree(G: nx.Graph):
 
 def get_degree_distribution(G: nx.Graph):
     degree_distribution = nx.degree_histogram(G)
-    bins, counts = zip(*enumerate(degree_distribution))
     analyze_degree(G)
-    plt.bar(bins, counts, width=0.80, color='b')
+    plt.bar(range(0, len(degree_distribution)), degree_distribution, width=0.80, color='b')
     plt.show()
+
+def analyze_network(G: nx.Graph):
+    get_degree_distribution(G)
