@@ -4,6 +4,10 @@ import re
 import datetime
 from typing import List
 
+def filter_date(song: dict) -> bool:
+    early = datetime.datetime(year=2023, month=2, day=1)
+    if song["datetime"] < early:
+        return True
 
 def parse_endsong(filename: str) -> List[dict]:
     """Given a filename, return the processed song data
@@ -21,9 +25,12 @@ def parse_endsong(filename: str) -> List[dict]:
     for song in data:
         if song["master_metadata_track_name"] == None:
             continue
-
+    
         # Change timestamp to datetime object to make comparison easier
         song["datetime"] = datetime.datetime.strptime(song["ts"], "%Y-%m-%dT%H:%M:%SZ")
+
+        if filter_date(song):
+            continue
 
         # Rename keys
         song["track"] = song.pop("master_metadata_track_name")

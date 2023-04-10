@@ -53,3 +53,4 @@ def write_network(G: nx.Graph, filename: str = "spotify_network"):
 
 if __name__ == "__main__":
     G = create_network()
+    write_network(G, "filter")
