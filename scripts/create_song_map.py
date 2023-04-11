@@ -15,7 +15,7 @@ def Spotify() -> spotipy.Spotify:
     return spotipy.Spotify(auth_manager=get_auth_manager())
 
 
-def _get_uris(filename: str) -> List[str]:
+def _get_ids(filename: str) -> List[str]:
     """Parse through all data in an endsong and return the track URIs
 
     Args:
@@ -26,7 +26,7 @@ def _get_uris(filename: str) -> List[str]:
     """
     with open(DATA_PATH / filename, "r") as f:
         data = json.load(f)
-    return [song["spotify_track_uri"] for song in data if song["spotify_track_uri"]]
+    return [song["spotify_track_uri"].split(':')[2] for song in data if song["spotify_track_uri"]]
 
 
 def _get_tracks(request_uris: str) -> dict:
@@ -46,7 +46,7 @@ def _get_tracks(request_uris: str) -> dict:
             "artists": [artist["name"] for artist in track["artists"]],
             "album": track["album"]["name"],
             "explicit": track["explicit"],
-            "genres": track["album"]["genres"],
+            "genres": track["album"].get("genres", []),
             "popularity": track["popularity"],
         }
         for track in tracks_response["tracks"]
@@ -81,7 +81,7 @@ def _get_audio_features(request_uris: str) -> dict:
             "mode": track["mode"],
             "key": track["key"],
         }
-        for track in audio_features_response["audio_features"]
+        for track in audio_features_response
     }
     return audio_features
 
@@ -98,7 +98,7 @@ def _construct_detailed_song(uri: str, metadata: dict, audio_features: dict) -> 
     """
     song = DetailedSong(uri, metadata["name"])
     song.set_metadata(metadata)
-    song.set_audio_features(audio_features[uri])
+    song.set_audio_features(audio_features)
     return song
 
 def _create_song_set() -> Set[DetailedSong]:
@@ -108,16 +108,17 @@ def _create_song_set() -> Set[DetailedSong]:
         Set[DetailedSong]: A set of DetailedSong objects
     """
 
-    uris = _get_uris("endsong_0.json")
+    ids = _get_ids("endsong_0.json")
 
     songs = set()
-    for i in range(0, len(uris), 50):
-        request_uris = ",".join(uris[i : i + 50])
+    for i in range(0, len(ids), 50):
+        request_uris = ids[i : i + 50]
 
         metadata = _get_tracks(request_uris)
         audio_features = _get_audio_features(request_uris)
 
-        for i, uri, item in enumerate(metadata.items()):
+        for i, item in enumerate(metadata.items()):
+            uri, item = item
             song = _construct_detailed_song(uri, item, audio_features[uri])
             songs.add(song)
 

@@ -2,7 +2,7 @@ from classes.Song import Song
 
 
 class DetailedSong(Song):
-    def __init__(self, uri, name, playlist = "None"):
+    def __init__(self, uri, name, playlist="None"):
         super().__init__(uri, name, playlist)
         self.artist = ""
         self.album = ""
@@ -30,7 +30,7 @@ class DetailedSong(Song):
         return self.__str__()
 
     def set_audio_features(self, audio_features):
-        self.accousticness = audio_features["accousticness"]
+        self.acousticness = audio_features["acousticness"]
         self.danceability = audio_features["danceability"]
         self.energy = audio_features["energy"]
         self.instrumentalness = audio_features["instrumentalness"]
@@ -47,7 +47,7 @@ class DetailedSong(Song):
     def set_metadata(self, metadata):
         self.genres = metadata["genres"]
         self.explicit = metadata["explicit"]
-        self.artist = metadata["artist"]
+        self.artist = metadata["artists"]
         self.album = metadata["album"]
         self.popularity = metadata["popularity"]
 
@@ -59,7 +59,7 @@ class DetailedSong(Song):
             "explicit": self.explicit,
             "genres": self.genres,
             "popularity": self.popularity,
-            "accousticness": self.accousticness,
+            "acousticness": self.accousticness,
             "danceability": self.danceability,
             "energy": self.energy,
             "instrumentalness": self.instrumentalness,
@@ -73,7 +73,7 @@ class DetailedSong(Song):
             "mode": self.mode,
             "key": self.key,
         }
-    
+
     def from_json(self, json):
         self.set_audio_features(json)
         self.set_metadata(json)
