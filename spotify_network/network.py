@@ -1,6 +1,7 @@
 import os
 import datetime
 import json
+import argparse
 
 import networkx as nx
 
@@ -93,7 +94,17 @@ def write_network(G: nx.Graph, filename: str = "spotify_network"):
     nx.write_gml(G, f"{filename}.gml")
     nx.write_gexf(G, f"{filename}.gexf")
 
+def get_options():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--filename",
+        type=str,
+        default="spotify_network",
+        help="Filename to save network to",
+    )
+    return parser.parse_args()
 
 if __name__ == "__main__":
+    options = get_options()
     G = create_network()
-    write_network(G, "filter")
+    write_network(G, options.filename)
