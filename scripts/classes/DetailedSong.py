@@ -9,7 +9,7 @@ class DetailedSong(Song):
         self.explicit = False
         self.genres = []
         self.popularity = 0
-        self.accousticness = 0
+        self.acousticness = 0
         self.danceability = 0
         self.energy = 0
         self.instrumentalness = 0
@@ -59,7 +59,7 @@ class DetailedSong(Song):
             "explicit": self.explicit,
             "genres": self.genres,
             "popularity": self.popularity,
-            "acousticness": self.accousticness,
+            "acousticness": self.acousticness,
             "danceability": self.danceability,
             "energy": self.energy,
             "instrumentalness": self.instrumentalness,
