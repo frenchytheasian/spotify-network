@@ -12,4 +12,3 @@ class Song:
 
     def to_json(self) -> dict:
         return {"name": self.name, "playlist": self.playlist}
-    

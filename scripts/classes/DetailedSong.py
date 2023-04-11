@@ -1,4 +1,4 @@
-from Song import Song
+from classes.Song import Song
 
 
 class DetailedSong(Song):
@@ -73,3 +73,7 @@ class DetailedSong(Song):
             "mode": self.mode,
             "key": self.key,
         }
+    
+    def from_json(self, json):
+        self.set_audio_features(json)
+        self.set_metadata(json)
