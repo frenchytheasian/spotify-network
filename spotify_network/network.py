@@ -19,17 +19,23 @@ def create_network(folder: str = "MyData"):
 
         G.add_node(
             current["track"],
+            id=current["spotify_track_uri"],
             artist=current["artist"],
             album=current["album"],
             liked=current["liked"],
             current=current["current"],
+            platform=current["platform"],
+            ip=current["ip_addr_decrypted"],
         )
         G.add_node(
             following["track"],
+            id=following["spotify_track_uri"],
             artist=following["artist"],
             album=following["album"],
             liked=following["liked"],
             current=following["current"],
+            platform=following["platform"],
+            ip=following["ip_addr_decrypted"],
         )
 
         if G.has_edge(current["track"], following["track"]):
