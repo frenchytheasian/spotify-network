@@ -1,7 +1,8 @@
 from pathlib import Path
 import json
-from typing import List, Set
+from typing import List
 import time
+import os
 
 import spotipy
 
@@ -15,7 +16,7 @@ def Spotify() -> spotipy.Spotify:
     return spotipy.Spotify(auth_manager=get_auth_manager())
 
 
-def _get_ids(filename: str) -> List[str]:
+def _get_ids(filename: str = "song_set.json") -> List[str]:
     """Parse through all data in an endsong and return the track URIs
 
     Args:
@@ -26,11 +27,7 @@ def _get_ids(filename: str) -> List[str]:
     """
     with open(DATA_PATH / filename, "r") as f:
         data = json.load(f)
-    return [
-        song["spotify_track_uri"].split(":")[2]
-        for song in data
-        if song["spotify_track_uri"]
-    ]
+    return data
 
 
 def _get_tracks(request_uris: str) -> dict:
@@ -110,17 +107,23 @@ def _construct_detailed_song(
     return song
 
 
-def _create_song_set() -> Set[DetailedSong]:
+def _get_state() -> int:
+    if not os.path.exists("state.txt"):
+        return 0
+    with open("state.txt", "r") as f:
+        return int(f.read())
+
+
+def create_song_map() -> None:
     """Create a set of DetailedSong objects from the endsong data.
 
     Returns:
         Set[DetailedSong]: A set of DetailedSong objects
     """
 
-    ids = _get_ids("endsong_0.json")
+    ids = _get_ids()
 
-    songs = set()
-    for i in range(0, len(ids), 50):
+    for i in range(_get_state(), len(ids), 50):
         try:
             request_uris = ids[i : i + 50]
         except IndexError:
@@ -129,32 +132,20 @@ def _create_song_set() -> Set[DetailedSong]:
         metadata = _get_tracks(request_uris)
         audio_features = _get_audio_features(request_uris)
 
+        songs = []
         for uri, item in metadata.items():
             song = _construct_detailed_song(uri, item, audio_features[uri])
-            songs.add(song)
+            songs.append(song)
 
+        append_to_map(songs)
+
+        with open("state.txt", "w") as f:
+            f.write(str(i + 50))
         print(f"Processed {i + 50}/{len(ids)} songs")
         time.sleep(4.0)  # Rate limit the requests to the spotify API
-    return songs
 
 
-def _get_song_map() -> Set[DetailedSong]:
-    """Retrieve the song map from the song_map.txt file.
-
-    Returns:
-        Set[DetailedSong]: A set of DetailedSong objects
-    """
-    song_map = set()
-    filepath = DATA_PATH / "song_map.txt"
-    if filepath.exists():
-        songs_json = json.load(open(filepath, "r"))
-        for uri, song in songs_json.items():
-            detailed_song = DetailedSong(uri, song["name"])
-            song_map.add(detailed_song.from_json(song))
-    return song_map
-
-
-def append_song_map(songs: Set[DetailedSong], filename: str = "song_map.txt") -> None:
+def append_to_map(songs: List[DetailedSong], filename: str = "song_map.json") -> None:
     """Append a set of DetailedSong objects to the song map.
 
     Args:
@@ -165,13 +156,16 @@ def append_song_map(songs: Set[DetailedSong], filename: str = "song_map.txt") ->
 
     filepath = DATA_PATH / filename
 
-    json.dump(songs_json, open(filepath, "a"), indent=4)
+    data = {}
+    if filepath.exists():
+        with open(filepath, "r") as f:
+            data = json.load(f)
+        data.update(songs_json)
+    else:
+        data = songs_json
 
-
-def main():
-    songs = _create_song_set()
-    append_song_map(songs)
+    json.dump(data, open(filepath, "w"))
 
 
 if __name__ == "__main__":
-    main()
+    create_song_map()
