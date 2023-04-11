@@ -21,7 +21,7 @@ class Song:
         return hash(self.uri)
 
     def to_json(self) -> dict:
-        return {self.uri: {"name": self.name, "playlist": self.playlist}}
+        return {"name": self.name, "playlist": self.playlist}
 
 
 def Spotify() -> spotipy.Spotify:
@@ -46,7 +46,7 @@ def store_song_map(songs: List[Song], filename: str = "current_map.txt") -> None
     if not os.path.exists("data"):
         os.mkdir("data")
     filepath = Path(__file__).parent.parent / "data" / filename
-    
+
     json.dump(songs_json, open(filepath, "w"), indent=4)
 
 

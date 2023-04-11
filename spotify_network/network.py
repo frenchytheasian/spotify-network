@@ -3,8 +3,8 @@ import datetime
 
 import networkx as nx
 
-from spotify_network.parse import parse_all_files
-from spotify_network.analysis import analyze_network
+from parse import parse_all_files
+from analysis import analyze_network
 
 
 def create_network(folder: str = "MyData"):

@@ -24,9 +24,12 @@ def is_liked(song: dict) -> bool:
     """
     data_path = Path(__file__).parent.parent / "data"
     liked_map = json.load(open(data_path / "liked_map.txt", "r"))
-    return song["uri"] in liked_map
+    return song["spotify_track_uri"] in liked_map
 
 def get_current(song: dict) -> str:
     data_path = Path(__file__).parent.parent / "data"
     current_map = json.load(open(data_path / "current_map.txt", "r"))
-    return Playlist(current_map[song["uri"]]["playlist"]).name
+    if song["spotify_track_uri"] in current_map:
+        return Playlist(current_map[song["spotify_track_uri"]]["playlist"]).name
+    else:
+        return "None"
