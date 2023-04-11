@@ -4,7 +4,14 @@ MyData/
 *.vscode
 .DS_Store
 __pycache__
+.cache
 
 # Network
 *.gml
 *.gexf
+
+.env
+
+# Data
+songs.txt
+*_map.txt
