@@ -3,8 +3,8 @@ import datetime
 
 import networkx as nx
 
-from parse import parse_all_files
-from analysis import analyze_network
+from spotify_network.parse import parse_all_files
+from spotify_network.analysis import analyze_network
 
 
 def create_network(folder: str = "MyData"):
@@ -17,9 +17,19 @@ def create_network(folder: str = "MyData"):
 
         following = all_songs[i + 1]
 
-        G.add_node(current["track"], artist=current["artist"], album=current["album"])
         G.add_node(
-            following["track"], artist=following["artist"], album=following["album"]
+            current["track"],
+            artist=current["artist"],
+            album=current["album"],
+            liked=current["liked"],
+            current=current["current"],
+        )
+        G.add_node(
+            following["track"],
+            artist=following["artist"],
+            album=following["album"],
+            liked=following["liked"],
+            current=following["current"],
         )
 
         if G.has_edge(current["track"], following["track"]):
@@ -35,7 +45,7 @@ def create_network(folder: str = "MyData"):
             ):
                 continue
 
-            if following['reason_start'] not in ['trackdone', 'fwdbtn']:
+            if following["reason_start"] not in ["trackdone", "fwdbtn"]:
                 continue
 
             G.add_edge(

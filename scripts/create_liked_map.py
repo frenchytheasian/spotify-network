@@ -1,6 +1,7 @@
 from typing import List
 import json
 from pathlib import Path
+import os
 
 import spotipy
 
@@ -20,7 +21,11 @@ def get_liked_songs() -> List[dict]:
 
 def create_liked_map(songs: List[dict], filename: str = 'liked_map.txt') -> None:
     song_map = {song['track']['uri']: song['track']['name'] for song in songs}
-    filepath = Path(__file__).parent.parent / filename
+
+    if not os.path.exists("data"):
+        os.mkdir("data")
+    filepath = Path(__file__).parent.parent / "data" /filename
+
     json.dump(song_map, open(filepath, 'w'), indent=4)
 
 if __name__ == "__main__":

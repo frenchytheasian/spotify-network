@@ -1,6 +1,7 @@
 from typing import List
 import json
 from pathlib import Path
+import os
 
 import spotipy
 
@@ -41,7 +42,11 @@ def get_songs_from_playlists(playlists: List[str]) -> List[str]:
 
 def store_song_map(songs: List[Song], filename: str = "current_map.txt") -> None:
     songs_json = {song.uri: song.to_json() for song in songs}
-    filepath = Path(__file__).parent.parent / filename
+
+    if not os.path.exists("data"):
+        os.mkdir("data")
+    filepath = Path(__file__).parent.parent / "data" / filename
+    
     json.dump(songs_json, open(filepath, "w"), indent=4)
 
 
