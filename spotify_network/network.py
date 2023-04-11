@@ -15,6 +15,10 @@ def create_network(folder: str = "MyData"):
         if i == len(all_songs) - 1:
             break
 
+        # Ignore songs that are played for less than 30 seconds
+        if current["ms_played"] < 30000:
+            continue
+
         following = all_songs[i + 1]
 
         G.add_node(
@@ -41,9 +45,6 @@ def create_network(folder: str = "MyData"):
         if G.has_edge(current["track"], following["track"]):
             G[current["track"]][following["track"]]["weight"] += 1
         else:
-            # Ignore songs that are played for less than 30 seconds
-            if current["ms_played"] < 30000:
-                continue
 
             # Only add edge if the next song is played within 1 hour. An edge is added if the next song is played in the same session
             if following["datetime"] - current["datetime"] > datetime.timedelta(
