@@ -27,48 +27,73 @@ def create_network(folder: str = "MyData"):
 
         following = all_songs[i + 1]
 
-        G.add_node(
-            current["track"],
-            id=current["spotify_track_uri"],
-            artist=current["artist"],
-            album=current["album"],
-            liked=current["liked"],
-            current=current["current"],
-            popularity=lookup[current["spotify_track_uri"]]["popularity"],
-            acousticness=int(lookup[current["spotify_track_uri"]]["acousticness"]*100),
-            danceability=int(lookup[current["spotify_track_uri"]]["danceability"]*100),
-            energy=int(lookup[current["spotify_track_uri"]]["energy"]*100),
-            instrumentalness=int(lookup[current["spotify_track_uri"]]["instrumentalness"]*100),
-            liveness=int(lookup[current["spotify_track_uri"]]["liveness"]*100),
-            loudness=int(lookup[current["spotify_track_uri"]]["loudness"]*100),
-            speechiness=int(lookup[current["spotify_track_uri"]]["speechiness"]*100),
-            tempo=int(lookup[current["spotify_track_uri"]]["tempo"]),
-            valence=int(lookup[current["spotify_track_uri"]]["valence"]*100),
-            time_signature=lookup[current["spotify_track_uri"]]["time_signature"],
-            mode=lookup[current["spotify_track_uri"]]["mode"],
-            key=lookup[current["spotify_track_uri"]]["key"],
-        )
-        G.add_node(
-            following["track"],
-            id=following["spotify_track_uri"],
-            artist=following["artist"],
-            album=following["album"],
-            liked=following["liked"],
-            current=following["current"],
-            popularity=lookup[current["spotify_track_uri"]]["popularity"],
-            acousticness=int(lookup[current["spotify_track_uri"]]["acousticness"]*100),
-            danceability=int(lookup[current["spotify_track_uri"]]["danceability"]*100),
-            energy=int(lookup[current["spotify_track_uri"]]["energy"]*100),
-            instrumentalness=int(lookup[current["spotify_track_uri"]]["instrumentalness"]*100),
-            liveness=int(lookup[current["spotify_track_uri"]]["liveness"]*100),
-            loudness=int(lookup[current["spotify_track_uri"]]["loudness"]*100),
-            speechiness=int(lookup[current["spotify_track_uri"]]["speechiness"]*100),
-            tempo=int(lookup[current["spotify_track_uri"]]["tempo"]),
-            valence=int(lookup[current["spotify_track_uri"]]["valence"]*100),
-            time_signature=lookup[current["spotify_track_uri"]]["time_signature"],
-            mode=lookup[current["spotify_track_uri"]]["mode"],
-            key=lookup[current["spotify_track_uri"]]["key"],
-        )
+        if G.has_node(current["track"]):
+            G.nodes[current["track"]]["played"] += 1
+        else:
+            G.add_node(
+                current["track"],
+                id=current["spotify_track_uri"],
+                artist=current["artist"],
+                album=current["album"],
+                liked=current["liked"],
+                current=current["current"],
+                popularity=lookup[current["spotify_track_uri"]]["popularity"],
+                acousticness=int(
+                    lookup[current["spotify_track_uri"]]["acousticness"] * 100
+                ),
+                danceability=int(
+                    lookup[current["spotify_track_uri"]]["danceability"] * 100
+                ),
+                energy=int(lookup[current["spotify_track_uri"]]["energy"] * 100),
+                instrumentalness=int(
+                    lookup[current["spotify_track_uri"]]["instrumentalness"] * 100
+                ),
+                liveness=int(lookup[current["spotify_track_uri"]]["liveness"] * 100),
+                loudness=int(lookup[current["spotify_track_uri"]]["loudness"] * 100),
+                speechiness=int(
+                    lookup[current["spotify_track_uri"]]["speechiness"] * 100
+                ),
+                tempo=int(lookup[current["spotify_track_uri"]]["tempo"]),
+                valence=int(lookup[current["spotify_track_uri"]]["valence"] * 100),
+                time_signature=lookup[current["spotify_track_uri"]]["time_signature"],
+                mode=lookup[current["spotify_track_uri"]]["mode"],
+                key=lookup[current["spotify_track_uri"]]["key"],
+                played=1,
+            )
+
+        if G.has_node(following["track"]):
+            continue
+        else:
+            G.add_node(
+                following["track"],
+                id=following["spotify_track_uri"],
+                artist=following["artist"],
+                album=following["album"],
+                liked=following["liked"],
+                current=following["current"],
+                popularity=lookup[current["spotify_track_uri"]]["popularity"],
+                acousticness=int(
+                    lookup[current["spotify_track_uri"]]["acousticness"] * 100
+                ),
+                danceability=int(
+                    lookup[current["spotify_track_uri"]]["danceability"] * 100
+                ),
+                energy=int(lookup[current["spotify_track_uri"]]["energy"] * 100),
+                instrumentalness=int(
+                    lookup[current["spotify_track_uri"]]["instrumentalness"] * 100
+                ),
+                liveness=int(lookup[current["spotify_track_uri"]]["liveness"] * 100),
+                loudness=int(lookup[current["spotify_track_uri"]]["loudness"] * 100),
+                speechiness=int(
+                    lookup[current["spotify_track_uri"]]["speechiness"] * 100
+                ),
+                tempo=int(lookup[current["spotify_track_uri"]]["tempo"]),
+                valence=int(lookup[current["spotify_track_uri"]]["valence"] * 100),
+                time_signature=lookup[current["spotify_track_uri"]]["time_signature"],
+                mode=lookup[current["spotify_track_uri"]]["mode"],
+                key=lookup[current["spotify_track_uri"]]["key"],
+                played=0,
+            )
 
         if G.has_edge(current["track"], following["track"]):
             G[current["track"]][following["track"]]["weight"] += 1
@@ -93,6 +118,7 @@ def create_network(folder: str = "MyData"):
 def write_network(G: nx.Graph, filename: str = "spotify_network"):
     nx.write_gexf(G, f"{filename}.gexf")
 
+
 def get_options():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -102,6 +128,7 @@ def get_options():
         help="Filename to save network to",
     )
     return parser.parse_args()
+
 
 if __name__ == "__main__":
     options = get_options()
