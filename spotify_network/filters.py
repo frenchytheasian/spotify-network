@@ -9,7 +9,7 @@ class Playlist(Enum):
     APR2022 = "spotify:playlist:5ifdmqV6vTsIEAckZB4Ccy"
 
 def filter_date(song: dict) -> bool:
-    early = datetime.datetime(year=2023, month=3, day=1)
+    early = datetime.datetime(year=2001, month=3, day=1)
     if song["datetime"] < early:
         return True
     
