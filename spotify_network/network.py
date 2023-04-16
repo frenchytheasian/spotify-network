@@ -107,6 +107,7 @@ def create_network(folder: str = "MyData"):
 
 def write_network(G: nx.Graph, filename: str = "spotify_network"):
     nx.write_gexf(G, f"{filename}.gexf")
+    nx.write_gml(G, f"{filename}.gml")
 
 
 def get_options():

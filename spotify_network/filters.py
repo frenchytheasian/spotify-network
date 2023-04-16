@@ -9,8 +9,11 @@ class Playlist(Enum):
     APR2022 = "spotify:playlist:5ifdmqV6vTsIEAckZB4Ccy"
 
 def filter_date(song: dict) -> bool:
-    early = datetime.datetime(year=2001, month=3, day=1)
+    early = datetime.datetime(year=2019, month=8, day=1)
     if song["datetime"] < early:
+        return True
+    late = datetime.datetime(year=2030, month=8, day=1)
+    if song["datetime"] > late:
         return True
     
 def is_liked(song: dict) -> bool:

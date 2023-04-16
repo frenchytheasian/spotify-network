@@ -16,3 +16,4 @@ __pycache__
 songs.txt
 *_map.txt
 state.txt
+*.png

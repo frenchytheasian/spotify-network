@@ -53,6 +53,7 @@ def parse_all_files(folder: str) -> List[dict]:
     all_songs = []
     for filename in os.listdir(folder):
         if re.match(r"^(endsong).*\.(json)$", filename):
+            print(f"Parsing {filename}...")
             all_songs.extend(parse_endsong(os.path.join(folder, filename)))
 
     return sorted(all_songs, key=lambda k: k["ts"])
