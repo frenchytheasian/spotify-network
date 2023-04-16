@@ -3,6 +3,8 @@ import json
 import networkx as nx
 from matplotlib import pyplot as plt
 
+### Code is not optimized between functions. A lot of repeated work is done.
+
 
 def analyze_network():
     G = nx.read_gml("All.gml")
@@ -68,6 +70,91 @@ def shortest_path_distribution():
     plt.title("Shortest Path Distribution")
     plt.savefig("shortest_path_distribution.png")
 
+def clustering_coefficient_distribution():
+    """Generate a linear and log log plot of the clustering coefficient distribution of the network
+    """
+
+    G = nx.read_gml("All.gml")
+
+    clustering_coefficients = nx.clustering(G).values()
+    coefficient_counts = dict()
+    for coefficient in clustering_coefficients:
+        if coefficient not in coefficient_counts:
+            coefficient_counts[coefficient] = 0
+        coefficient_counts[coefficient] += 1
+
+    x = list(coefficient_counts.keys())
+    y = list(coefficient_counts.values())
+
+    plt.plot(x, y, "o")
+    plt.xlabel("Clustering Coefficient")
+    plt.ylabel("Count")
+    plt.title("Clustering Coefficient Distribution")
+    plt.savefig("clustering_coefficient_distribution_linear.png")
+
+
+    plt.loglog(x, y, "o")
+    plt.xlabel("Clustering Coefficient")
+    plt.ylabel("Count")
+    plt.title("Clustering Coefficient Distribution")
+    plt.savefig("clustering_coefficient_distribution.png")
+
+
+def betweenness_centrality_distribution():
+    """Generate a log log plot of the betweenness centrality distribution of the network
+    """
+
+    G = nx.read_gml("All.gml")
+
+    betweenness_centrality = nx.betweenness_centrality(G).values()
+    centrality_counts = dict()
+    for centrality in betweenness_centrality:
+        if centrality not in centrality_counts:
+            centrality_counts[centrality] = 0
+        centrality_counts[centrality] += 1
+
+    x = list(centrality_counts.keys())
+    y = list(centrality_counts.values())
+
+    plt.loglog(x, y, "o")
+    plt.xlabel("Betweenness Centrality")
+    plt.ylabel("Count")
+    plt.title("Betweenness Centrality Distribution")
+    plt.savefig("betweenness_centrality_distribution.png")
+
+
+def get_largest_hub(G):
+    """Get the largest hub in the network
+
+    Args:
+        G (nx.Graph): The network to analyze
+
+    Returns:
+        str: The name of the largest hub
+    """
+    degrees = dict(G.degree())
+    largest_hub = max(degrees, key=degrees.get)
+    degree = degrees[largest_hub]
+    return largest_hub, degree
+
+def get_biggest_bottleneck(G):
+    """Get the biggest bottleneck in the network
+
+    Args:
+        G (nx.Graph): The network to analyze
+
+    Returns:
+        (str, int): A tuple containing the name of the bottleneck and the betweenness centrality of the bottleneck
+    """
+    betweenness_centrality = nx.betweenness_centrality(G)
+    biggest_bottleneck = max(betweenness_centrality, key=betweenness_centrality.get)
+    centrality = betweenness_centrality[biggest_bottleneck]
+    return biggest_bottleneck, centrality
+    
 
 if __name__ == "__main__":
-    shortest_path_distribution()
+    G = nx.read_gml("Allartists.gml")
+    hub = get_largest_hub(G)
+    bottleneck = get_biggest_bottleneck(G)
+    print(f"Largest hub: {hub[0]} with {hub[1]} connections")
+    print(f"Biggest bottleneck: {bottleneck[0]} with {bottleneck[1]} betweenness centrality")
