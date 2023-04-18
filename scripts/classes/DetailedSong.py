@@ -69,7 +69,6 @@ class DetailedSong(Song):
             "tempo": self.tempo,
             "valence": self.valence,
             "time_signature": self.time_signature,
-            "tempo": self.tempo,
             "mode": self.mode,
             "key": self.key,
         }

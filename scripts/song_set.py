@@ -17,7 +17,7 @@ def _valid(track: dict) -> bool:
     return (
         track["spotify_track_uri"]
         and track["ms_played"] > 29999
-        and track["master_metadata_track_name"] != None
+        and track["master_metadata_track_name"] is not None
     )
 
 

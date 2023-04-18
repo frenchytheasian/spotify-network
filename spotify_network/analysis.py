@@ -135,7 +135,11 @@ def get_largest_hub(G):
     degrees = dict(G.degree())
     largest_hub = max(degrees, key=degrees.get)
     degree = degrees[largest_hub]
-    return largest_hub, degree
+
+    second_largest_hub = max(degrees, key=lambda x: degrees[x] if x != largest_hub else 0)
+    second_degree = degrees[second_largest_hub]
+    
+    return [(largest_hub, degree), (second_largest_hub, second_degree)]
 
 def get_biggest_bottleneck(G):
     """Get the biggest bottleneck in the network
@@ -151,10 +155,33 @@ def get_biggest_bottleneck(G):
     centrality = betweenness_centrality[biggest_bottleneck]
     return biggest_bottleneck, centrality
     
+def generate_erdos_renyi_graph():
+    """Generate an Erdos-Renyi graph with n nodes and probability p
+
+    Args:
+        n (int): Number of nodes
+        p (float): Probability of edge creation
+
+    Returns:
+        nx.Graph: The generated graph
+    """
+    G = nx.fast_gnp_random_graph(13050, p=0.000539)
+    nx.write_gml(G, "ErdosRenyi.gml")
+    return G
+
+def generate_scale_free_graph():
+    """Generate a scale free graph with n nodes and m edges
+
+    Args:
+        n (int): Number of nodes
+        m (int): Number of edges
+
+    Returns:
+        nx.Graph: The generated graph
+    """
+    G = nx.barabasi_albert_graph(13050, 80)
+    nx.write_gml(G, "ScaleFree.gml")
+    return G
 
 if __name__ == "__main__":
-    G = nx.read_gml("Allartists.gml")
-    hub = get_largest_hub(G)
-    bottleneck = get_biggest_bottleneck(G)
-    print(f"Largest hub: {hub[0]} with {hub[1]} connections")
-    print(f"Biggest bottleneck: {bottleneck[0]} with {bottleneck[1]} betweenness centrality")
+    generate_scale_free_graph()

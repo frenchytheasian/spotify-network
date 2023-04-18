@@ -79,7 +79,6 @@ def _get_audio_features(request_uris: str) -> dict:
             "tempo": track["tempo"],
             "valence": track["valence"],
             "time_signature": track["time_signature"],
-            "tempo": track["tempo"],
             "mode": track["mode"],
             "key": track["key"],
         }

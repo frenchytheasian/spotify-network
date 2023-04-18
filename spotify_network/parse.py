@@ -20,7 +20,7 @@ def parse_endsong(filename: str) -> List[dict]:
 
     new_data = []
     for song in data:
-        if song["master_metadata_track_name"] == None:
+        if song["master_metadata_track_name"] is None:
             continue
     
         # Change timestamp to datetime object to make comparison easier
